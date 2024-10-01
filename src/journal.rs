@@ -1,3 +1,6 @@
+use std::fs::File;
+use std::io::Write;
+
 pub struct JournalEntry {
     title: String,
     content: String,
@@ -17,6 +20,12 @@ impl JournalEntry {
 
     pub fn content(&self) -> &str {
         &self.content
+    }
+
+    pub fn write_to_file(&self, file_path: &str) -> std::io::Result<()> {
+        let mut file = File::create(file_path)?;
+        file.write_all((self.title.clone() + &"\n".to_string() + &self.content).as_bytes())?;
+        Ok(())
     }
 }
 
