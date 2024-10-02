@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::Write;
+use std::io::{BufRead, BufReader, Lines, Write};
 use std::path::Path;
 
 pub struct JournalEntry {
@@ -32,6 +32,19 @@ impl JournalEntry {
 
         Ok(())
     }
+
+    pub fn load_from_file<P: AsRef<Path>>(file_path: P) -> std::io::Result<Self> {
+        let file: File = File::open(file_path)?;
+        let reader: BufReader<File> = BufReader::new(file);
+        let mut lines: Lines<BufReader<File>> = reader.lines();
+
+        let title = lines.next().ok_or_else(|| {
+            std::io::Error::new(std::io::ErrorKind::InvalidData, "File is empty")
+        })??;
+        let content: String = lines.collect::<Result<Vec<_>, _>>()?.join("\n");
+
+        Ok(JournalEntry { title, content })
+    }
 }
 
 #[cfg(test)]
@@ -61,6 +74,39 @@ mod tests {
         let expected_content = "Title\nContent";
 
         assert_eq!(file_content, expected_content);
+
+        Ok(())
+    }
+
+    #[test]
+    fn load_from_file_valid_entry() -> std::io::Result<()> {
+        use tempdir::TempDir;
+        let dir = TempDir::new("test_dir")?;
+        let file_path = dir.path().join("write.txt");
+
+        let original_entry = JournalEntry::new("Loaded Title", "Loaded Content");
+        original_entry.write_to_file(&file_path)?;
+
+        let loaded_entry = JournalEntry::load_from_file(&file_path)?;
+
+        assert_eq!(loaded_entry.title(), original_entry.title());
+        assert_eq!(loaded_entry.content(), original_entry.content());
+
+        Ok(())
+    }
+
+    #[test]
+    fn load_from_empty_file_should_fail() -> std::io::Result<()> {
+        use tempdir::TempDir;
+
+        let dir = TempDir::new("test_dir")?;
+        let file_path = dir.path().join("empty.txt");
+
+        File::create(&file_path)?;
+
+        let result = JournalEntry::load_from_file(&file_path);
+
+        assert!(result.is_err());
 
         Ok(())
     }
