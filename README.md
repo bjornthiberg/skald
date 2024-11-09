@@ -2,30 +2,32 @@
   <img src="images/header.png" alt="Skald" width="250" height="250">
   <p align="center">
     <br>
-    Encrypted Local Journal in Rust
+    Journaling in Rust
     <br/>
   </p>
 </div>
 
-**Skald** (will be) a file-based, encrypted digital journal written in Rust. Each entry will be timestamped, encrypted, and immutable after it is saved.
+
+**Skald** (will be) an encrypted digital journal written in Rust. Each entry will be timestamped, encrypted, and immutable after save.
 
 ## Project Overview
 
-Skald is a learning project where the primary focus is to build a secure, file-based journal application using Rust. Initially, it will be a command-line interface (CLI) application, but it will eventually evolve into a desktop app with a graphical user interface (GUI) using Tauri.
+Skald is a learning project where the primary focus is to build a secure, file-based journal application using Rust. Initially a CLI application, but perhaps eventually a GUI app.
 
 ## Goals
 
 1. **Learn Rust**: The primary goal of this project is to deepen understanding of Rust, particularly with regard to file handling, error management, and secure systems programming.
 2. **Security**: Each entry should be encrypted before it's saved.
-3. **Integrity**: Implement some mechanism to prevent tampering.
-4. **Cross-Platform GUI**: Build a GUI using Tauri (and some UI framework) for desktop.
-5. **Learn Systems Programming**: I might over-engineer some areas to make this project a gateway into low-level programming.
+3. **Integrity**: Implement anti-tampering and immutability.
+4. **Cross-Platform GUI**: Build a GUI using Tauri, with some nice UI framework.
+5. **Learn Systems Programming**: Might over-engineer some areas to make this project a gateway into low-level programming.
 
-## Tech Stack (Prel.)
+## Tools
 
 - **Rust**: For building the backend (CLI, encryption, file handling).
 - **Tauri**: For the GUI desktop app (future goal).
 - **sha2**: Cryptographic hashing, immutability.
+- etc
 
 ## Installation
 
