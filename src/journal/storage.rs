@@ -27,12 +27,12 @@ impl Storage {
 
     pub fn list_entries(&self) -> io::Result<Vec<String>> {
         let entries: Vec<String> = fs::read_dir(&self.base_path)?
-            .filter_map(|entry| entry.ok()) // filter out errors
-            .filter_map(|entry| {
+            .filter_map(|entry: Result<fs::DirEntry, io::Error>| entry.ok()) // filter out errors
+            .filter_map(|entry: fs::DirEntry| {
                 entry
                     .path()
                     .file_stem() // Get filename without extension
-                    .and_then(|name| name.to_str())
+                    .and_then(|name: &std::ffi::OsStr| name.to_str())
                     .map(String::from)
             })
             .collect();
@@ -105,6 +105,23 @@ mod tests {
         let listed_entries: Vec<String> = storage.list_entries()?;
 
         assert_eq!(listed_entries, vec!["Entry 1", "Entry 2"]);
+
+        Ok(())
+    }
+
+    #[test]
+    fn storage_loads_saved_entry() -> io::Result<()> {
+        let temp_dir: TempDir = tempfile::tempdir()?;
+        let storage: Storage = Storage::new(temp_dir.path())?;
+
+        let expected_entry: JournalEntry = JournalEntry::new("Test Entry", "Test Content");
+        storage.save_entry(&expected_entry)?;
+
+        let loaded_entry: JournalEntry = storage.load_entry("Test Entry")?;
+
+        assert_eq!(loaded_entry.content(), expected_entry.content());
+        assert_eq!(loaded_entry.title(), expected_entry.title());
+        assert_eq!(loaded_entry.created_at(), expected_entry.created_at());
 
         Ok(())
     }
