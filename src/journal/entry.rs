@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct JournalEntry {
     title: String,
     content: String,
-    timestamp: DateTime<Utc>,
+    created_at: DateTime<Utc>,
 }
 
 impl JournalEntry {
@@ -14,7 +14,7 @@ impl JournalEntry {
         Self {
             title: title.to_string(),
             content: content.to_string(),
-            timestamp: now,
+            created_at: now,
         }
     }
 
@@ -27,33 +27,11 @@ impl JournalEntry {
     }
 
     pub fn timestamp(&self) -> &DateTime<Utc> {
-        &self.timestamp
-    }
-/* 
-    pub fn write_to_file<P: AsRef<Path>>(&self, file_path: P) -> std::io::Result<()> {
-        let mut file = File::create(file_path)?;
-
-        writeln!(file, "{}", self.title)?;
-
-        file.write_all(self.content.as_bytes())?;
-
-        Ok(())
+        &self.created_at
     }
 
-    pub fn load_from_file<P: AsRef<Path>>(file_path: P) -> std::io::Result<Self> {
-        let file: File = File::open(file_path)?;
-        let reader: BufReader<File> = BufReader::new(file);
-        let mut lines: Lines<BufReader<File>> = reader.lines();
-
-        let title = lines.next().ok_or_else(|| {
-            std::io::Error::new(std::io::ErrorKind::InvalidData, "File is empty")
-        })??;
-        let content: String = lines.collect::<Result<Vec<_>, _>>()?.join("\n");
-
-        Ok(JournalEntry { title, content })
-    } */
 }
-
+/* 
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -118,3 +96,4 @@ mod tests {
         Ok(())
     }
 }
+ */
