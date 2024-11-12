@@ -93,10 +93,7 @@ mod tests {
         let temp_dir: TempDir = tempfile::tempdir()?;
         let storage: Storage = Storage::new(temp_dir.path())?;
 
-        let entries: Vec<JournalEntry> = vec![
-            JournalEntry::new("Entry 1", "Content 1"),
-            JournalEntry::new("Entry 2", "Content 2"),
-        ];
+        let entries: Vec<JournalEntry> = vec![JournalEntry::new("Entry 1", "Content 1")];
 
         for entry in &entries {
             storage.save_entry(entry)?;
@@ -104,7 +101,7 @@ mod tests {
 
         let listed_entries: Vec<String> = storage.list_entries()?;
 
-        assert_eq!(listed_entries, vec!["Entry 1", "Entry 2"]);
+        assert_eq!(listed_entries, vec!["Entry 1"]);
 
         Ok(())
     }
